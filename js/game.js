@@ -229,29 +229,70 @@ const keys = { left: false, right: false, up: false, space: false };
 const justPressed = { up: false, space: false };
 
 // Canvas
-let canvas, ctx, CW, CH;
+let canvas, ctx, CW = 800, CH = 600;
+let canvasResizeBound = false;
 
 function initCanvas() {
   canvas = document.getElementById('gameCanvas');
+  if (!canvas) return;
   ctx = canvas.getContext('2d');
+
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+
+  // Evita registrar múltiples listeners cada vez que se reinicia una partida.
+  if (!canvasResizeBound) {
+    window.addEventListener('resize', resizeCanvas);
+    canvasResizeBound = true;
+  }
 }
 
 function resizeCanvas() {
   if (!canvas) return;
-  const container = document.getElementById('screen-game');
-  CW = container ? container.clientWidth : window.innerWidth;
-  CH = window.innerHeight - 48 - (window.matchMedia('(pointer: coarse)').matches ? 60 : 0);
+
+  const screen = document.getElementById('screen-game');
+  const hud = document.querySelector('.hud');
+  const controls = document.querySelector('.mobile-controls');
+
+  // Si el canvas se mide mientras la pantalla está oculta, getBoundingClientRect() da 0.
+  // Por eso usamos fallback a window y nunca dejamos el canvas en 0x0.
+  const rect = canvas.getBoundingClientRect();
+  const hudH = hud?.offsetHeight || 48;
+  const controlsVisible = window.matchMedia('(pointer: coarse)').matches;
+  const controlsH = controlsVisible ? (controls?.offsetHeight || 60) : 0;
+
+  const fallbackW = screen?.clientWidth || window.innerWidth || 800;
+  const fallbackH = window.innerHeight - hudH - controlsH;
+
+  CW = Math.max(320, Math.floor(rect.width || fallbackW));
+  CH = Math.max(240, Math.floor(rect.height || fallbackH || 600));
+
   canvas.width = CW;
   canvas.height = CH;
 }
 
 // ===== PLAYER =====
+function getSafeSpawnY(x = 80, w = 36, h = 44) {
+  const ground = platforms.find(p =>
+    p.type === 'ground' && x + w > p.x && x < p.x + p.w
+  ) || platforms.find(p => p.type === 'ground');
+
+  return ground ? ground.y - h : 400;
+}
+
+function getSafeSpawnX(preferredX = 80, w = 36) {
+  const ground = platforms.find(p =>
+    p.type === 'ground' && preferredX + w > p.x && preferredX < p.x + p.w
+  ) || platforms.find(p => p.type === 'ground');
+
+  if (!ground) return preferredX;
+  return Math.min(Math.max(preferredX, ground.x + 8), ground.x + ground.w - w - 8);
+}
+
 function createPlayer(charData) {
+  const startX = getSafeSpawnX(80, 36);
   return {
-    x: 80,
-    y: 400,
+    x: startX,
+    y: getSafeSpawnY(startX, 36, 44),
     w: 36,
     h: 44,
     vx: 0,
@@ -624,9 +665,10 @@ function loseLife(msg) {
   if (gameState.lives <= 0) {
     setTimeout(() => gameOver(msg), 400);
   } else {
-    // Respawn
-    player.x = Math.max(80, camera.x + 80);
-    player.y = 200;
+    // Respawn seguro: no reaparece dentro de un hueco ni fuera del área visible.
+    const respawnX = getSafeSpawnX(Math.max(80, camera.x + 80), player.w);
+    player.x = respawnX;
+    player.y = getSafeSpawnY(respawnX, player.w, player.h);
     player.vx = 0;
     player.vy = 0;
     showToast('💀 ' + (msg || 'Te atrapó la justicia... +' + gameState.lives + ' vidas restantes'));
@@ -987,15 +1029,18 @@ function startGame(characterId) {
     invincible: 0,
   };
 
+  // Primero se muestra la pantalla. Si medimos el canvas oculto, queda en 0x0 y el juego se ve negro.
+  showScreen('screen-game');
+
   initCanvas();
   resizeCanvas();
   initLevel(0);
   player = createPlayer(char);
 
   updateHUD();
-  showScreen('screen-game');
   showLevelBanner();
 
+  if (animFrame) cancelAnimationFrame(animFrame);
   lastTime = performance.now();
   animFrame = requestAnimationFrame(gameLoop);
 }
@@ -1008,18 +1053,22 @@ function nextLevel() {
     gameState.score += 5000;
   }
 
+  showScreen('screen-game');
+  resizeCanvas();
   initLevel(gameState.level);
-  player.x = 80;
-  player.y = 400;
+
+  const respawnX = getSafeSpawnX(80, player?.w || 36);
+  player.x = respawnX;
+  player.y = getSafeSpawnY(respawnX, player?.w || 36, player?.h || 44);
   player.vx = 0;
   player.vy = 0;
   gameState.specialCooldown = 0;
   gameState.invincible = 1;
 
   updateHUD();
-  showScreen('screen-game');
   showLevelBanner();
 
+  if (animFrame) cancelAnimationFrame(animFrame);
   lastTime = performance.now();
   gameState.running = true;
   animFrame = requestAnimationFrame(gameLoop);
