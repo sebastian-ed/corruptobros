@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎮 CORRUPTO BROS — La Causa Infinita</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== SCREENS ===== -->
+<div id="screen-title" class="screen active">
+  <div class="title-bg"></div>
+  <div class="title-scanlines"></div>
+  <div class="title-content">
+    <div class="title-logo">
+      <span class="title-line1">🎮 CORRUPTO</span>
+      <span class="title-line2">BROS</span>
+      <span class="title-sub">LA CAUSA INFINITA</span>
+    </div>
+    <div class="title-chars">
+      <div class="char-preview" data-char="milei">🦁</div>
+      <div class="char-preview" data-char="karina">👸</div>
+      <div class="char-preview" data-char="adorni">✈️</div>
+      <div class="char-preview" data-char="espert">💊</div>
+      <div class="char-preview" data-char="spagnuolo">🎙️</div>
+      <div class="char-preview" data-char="novelli">💎</div>
+    </div>
+    <div class="title-menu">
+      <button class="menu-btn" id="btn-start">▶ NUEVA PARTIDA</button>
+      <button class="menu-btn" id="btn-scores">🏆 TABLA DE CORRUPTOS</button>
+      <button class="menu-btn" id="btn-manual">📖 MANUAL DE CAUSAS</button>
+    </div>
+    <div class="title-footer">
+      <span>MADE IN ARGENTINA 🇦🇷 | TODOS LOS HECHOS SON REALES</span>
+    </div>
+  </div>
+</div>
+
+<div id="screen-select" class="screen">
+  <div class="select-bg"></div>
+  <h2 class="select-title">ELEGÍ TU CORRUPTO</h2>
+  <div class="characters-grid" id="characters-grid"></div>
+  <button class="back-btn" id="btn-back-select">← VOLVER</button>
+</div>
+
+<div id="screen-manual" class="screen">
+  <div class="manual-bg"></div>
+  <h2 class="manual-title">📋 MANUAL DE CAUSAS</h2>
+  <div class="manual-content" id="manual-content"></div>
+  <button class="back-btn" id="btn-back-manual">← VOLVER</button>
+</div>
+
+<div id="screen-scores" class="screen">
+  <div class="scores-bg"></div>
+  <h2 class="scores-title">🏆 TABLA DE CORRUPTOS</h2>
+  <div id="scores-name-input" class="scores-name-section">
+    <label>TU NOMBRE / ALIAS:</label>
+    <input type="text" id="player-name-input" maxlength="20" placeholder="TU NOMBRE ACÁ..." />
+    <button class="menu-btn" id="btn-save-score" style="display:none">💾 GUARDAR PUNTAJE</button>
+  </div>
+  <div class="scores-table-wrap">
+    <table class="scores-table">
+      <thead>
+        <tr><th>#</th><th>JUGADOR</th><th>PERSONAJE</th><th>PUNTAJE</th><th>NIVEL</th></tr>
+      </thead>
+      <tbody id="scores-tbody">
+        <tr><td colspan="5">Cargando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <button class="menu-btn share-btn" id="btn-share">📲 COMPARTIR EN REDES</button>
+  <button class="back-btn" id="btn-back-scores">← VOLVER</button>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div id="screen-game" class="screen">
+  <div class="hud">
+    <div class="hud-left">
+      <span id="hud-char-emoji">🦁</span>
+      <span id="hud-char-name">MILEI</span>
+    </div>
+    <div class="hud-center">
+      <span class="hud-label">CAUSA$</span>
+      <span id="hud-score">000000</span>
+    </div>
+    <div class="hud-right">
+      <span class="hud-label">NIVEL</span>
+      <span id="hud-level">1</span>
+      <span class="hud-label" style="margin-left:12px">VIDAS</span>
+      <span id="hud-lives">❤️❤️❤️</span>
+    </div>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <div class="mobile-controls">
+    <button class="ctrl-btn" id="ctrl-left">◀</button>
+    <button class="ctrl-btn" id="ctrl-jump">▲ SALTAR</button>
+    <button class="ctrl-btn" id="ctrl-right">▶</button>
+  </div>
+</div>
+
+<!-- ===== GAME OVER ===== -->
+<div id="screen-gameover" class="screen">
+  <div class="go-bg"></div>
+  <div class="go-content">
+    <h2 class="go-title">GAME OVER</h2>
+    <p class="go-subtitle" id="go-subtitle">EL FISCAL TE ATRAPÓ</p>
+    <div class="go-score">
+      <span>CAUSA$ RECAUDADAS:</span>
+      <span id="go-score-val">000000</span>
+    </div>
+    <div class="go-quote" id="go-quote"></div>
+    <button class="menu-btn" id="btn-retry">🔄 REINTENTAR</button>
+    <button class="menu-btn" id="btn-go-scores">🏆 VER TABLA</button>
+    <button class="menu-btn" id="btn-go-title">🏠 INICIO</button>
+  </div>
+</div>
+
+<!-- ===== WIN ===== -->
+<div id="screen-win" class="screen">
+  <div class="win-bg"></div>
+  <div class="win-content">
+    <h2 class="win-title">¡NIVEL SUPERADO!</h2>
+    <p id="win-message">Escapaste de la justicia... por ahora 🤑</p>
+    <div class="win-score">
+      <span>BONUS NIVEL:</span>
+      <span id="win-bonus">+5000</span>
+    </div>
+    <button class="menu-btn" id="btn-next-level">▶▶ SIGUIENTE NIVEL</button>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATIONS -->
+<div id="toast" class="toast"></div>
+
+<script src="js/characters.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
