@@ -667,3 +667,49 @@ html, body {
   color: rgba(255,255,255,0.8);
   margin-top: 12px;
 }
+
+
+/* ===== PIXEL FACES ===== */
+.pixel-face-canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.char-preview {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.char-preview .pixel-face-canvas {
+  width: 40px;
+  height: 40px;
+}
+
+.char-emoji {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.char-emoji .pixel-face-canvas {
+  width: 64px;
+  height: 64px;
+}
+
+#hud-char-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+}
+
+#hud-char-emoji .pixel-face-canvas {
+  width: 32px;
+  height: 32px;
+}

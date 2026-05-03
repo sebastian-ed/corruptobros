@@ -4,6 +4,8 @@
 
 Un juego de plataformas estilo Mario Bros pero con la temática de los escándalos políticos de la Argentina actual. Una parodia satírica basada en hechos reales de dominio público.
 
+**Actualización visual:** los personajes ahora usan retratos faciales en pixel art en selección, HUD y gameplay.
+
 ---
 
 ## 🆕 VERSIÓN MEJORADA

@@ -41,7 +41,7 @@ function buildCharacterSelect() {
     const card = document.createElement('div');
     card.className = 'char-card';
     card.innerHTML = `
-      <div class="char-emoji">${char.emoji}</div>
+      <div class="char-emoji"></div>
       <div class="char-name">${char.name}</div>
       <div class="char-title">${char.title}</div>
       <div class="char-causa">${char.causa}</div>
@@ -54,6 +54,7 @@ function buildCharacterSelect() {
         ${char.specialPower}
       </div>
     `;
+    mountCharacterPixelFace(card.querySelector('.char-emoji'), char.id, 4, { className: 'pixel-face-card' });
     card.addEventListener('click', () => {
       document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');

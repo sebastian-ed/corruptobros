@@ -1278,6 +1278,10 @@ function drawPlayer(time) {
   ctx.fillRect(sx, sy, player.w, player.h);
 
   const wobble = player.onGround && Math.abs(player.vx) > 0.35 ? Math.sin(player.walkCycle * Math.PI / 2) * 2 : 0;
+  const faceScale = 2;
+  const faceSize = 16 * faceScale;
+  const pxX = Math.round(sx + (player.w - faceSize) / 2);
+  const pxY = Math.round(sy + (player.h - faceSize) / 2 + wobble * 0.5);
 
   if (!player.facingRight) {
     ctx.translate(sx + player.w / 2, sy + player.h / 2);
@@ -1285,9 +1289,7 @@ function drawPlayer(time) {
     ctx.translate(-(sx + player.w / 2), -(sy + player.h / 2));
   }
 
-  ctx.font = (player.h * 0.72) + 'px serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(char.emoji, sx + player.w / 2, sy + player.h - 4 + wobble);
+  drawCharacterPixelPortrait(ctx, char.id, pxX, pxY, faceScale, { accentColor: char.color });
   ctx.restore();
 
   if (gameState.specialCooldown > 0) {
@@ -1490,7 +1492,7 @@ function updateHUD() {
   document.getElementById('hud-lives').textContent = '❤️'.repeat(Math.max(0, gameState.lives));
   if (gameState.character) {
     const char = CHARACTERS[gameState.character];
-    document.getElementById('hud-char-emoji').textContent = char.emoji;
+    mountCharacterPixelFace(document.getElementById('hud-char-emoji'), gameState.character, 2, { className: 'pixel-face-hud' });
     document.getElementById('hud-char-name').textContent = char.name.split(' ')[0];
   }
 }

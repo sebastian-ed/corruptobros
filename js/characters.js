@@ -160,6 +160,167 @@ const CHARACTERS = {
   },
 };
 
+
+// ===== PIXEL ART PORTRAITS =====
+const PIXEL_FACE_STYLES = {
+  milei: {
+    skin: '#efc4a6', shadow: '#d39d7f', hair: '#201612', hairLight: '#62462f', beard: '#271c17', brow: '#18110f', mouth: '#9c5263'
+  },
+  karina: {
+    skin: '#f0c7ae', shadow: '#d7a58a', hair: '#d7b35b', hairLight: '#f3d98b', beard: '#d7b35b', brow: '#7e6031', mouth: '#b55d73'
+  },
+  adorni: {
+    skin: '#e8c0a0', shadow: '#c99676', hair: '#1b1b1d', hairLight: '#47474d', beard: '#222226', brow: '#202024', mouth: '#8a4d5c'
+  },
+  espert: {
+    skin: '#e9c1a2', shadow: '#ce9d7b', hair: '#8f9298', hairLight: '#c8ccd1', beard: '#5a4f48', brow: '#4f5054', mouth: '#914d5a'
+  },
+  spagnuolo: {
+    skin: '#e8bea1', shadow: '#c99273', hair: '#281d1a', hairLight: '#5b463d', beard: '#2d211d', brow: '#211714', mouth: '#8d4b5a'
+  },
+  novelli: {
+    skin: '#e7bea0', shadow: '#cb9478', hair: '#231d21', hairLight: '#645965', beard: '#2d262a', brow: '#231e22', mouth: '#8e4a58'
+  },
+};
+
+function _pixelBlock(ctx, x, y, scale, gx, gy, w, h, color) {
+  if (!color) return;
+  ctx.fillStyle = color;
+  ctx.fillRect(x + gx * scale, y + gy * scale, w * scale, h * scale);
+}
+
+function drawCharacterPixelPortrait(ctx, characterId, x, y, scale = 1, options = {}) {
+  const style = PIXEL_FACE_STYLES[characterId] || PIXEL_FACE_STYLES.milei;
+  const accent = options.accentColor || CHARACTERS[characterId]?.color || '#666';
+  const px = (gx, gy, w, h, color) => _pixelBlock(ctx, x, y, scale, gx, gy, w, h, color);
+
+  ctx.save();
+  if (options.flipX) {
+    ctx.translate(x + 16 * scale, y);
+    ctx.scale(-1, 1);
+    x = 0;
+    y = 0;
+  }
+
+  // Sombra y cuerpo base.
+  px(4, 15, 8, 1, 'rgba(0,0,0,0.18)');
+  px(3, 12, 10, 4, '#13131b');
+  px(4, 12, 3, 4, accent);
+  px(9, 12, 3, 4, accent);
+  px(7, 12, 2, 4, '#f4f4f7');
+  px(7, 13, 2, 2, '#1c1c22');
+  px(7, 13, 1, 2, '#d42d44');
+  px(8, 13, 1, 2, '#d42d44');
+  px(6, 11, 4, 1, style.skin);
+  px(7, 10, 2, 2, style.shadow);
+
+  // Cabeza base.
+  px(4, 2, 8, 9, style.skin);
+  px(4, 8, 8, 3, style.shadow);
+  px(3, 5, 1, 3, style.skin);
+  px(12, 5, 1, 3, style.skin);
+  px(5, 3, 6, 1, style.shadow);
+
+  // Rasgos faciales.
+  px(5, 5, 2, 1, style.brow);
+  px(9, 5, 2, 1, style.brow);
+  px(5, 6, 1, 1, '#161616');
+  px(10, 6, 1, 1, '#161616');
+  px(7, 7, 2, 2, style.shadow);
+  px(8, 7, 1, 1, style.skin);
+  px(6, 9, 4, 1, style.mouth);
+  px(7, 9, 2, 1, '#d37a8b');
+
+  switch (characterId) {
+    case 'milei':
+      px(3, 1, 10, 2, style.hair);
+      px(2, 2, 2, 2, style.hair);
+      px(12, 2, 2, 2, style.hair);
+      px(2, 4, 1, 5, style.hair);
+      px(13, 4, 1, 5, style.hair);
+      px(4, 1, 8, 1, style.hairLight);
+      px(4, 2, 8, 1, style.hairLight);
+      px(4, 7, 1, 3, style.hair);
+      px(11, 7, 1, 3, style.hair);
+      px(5, 10, 2, 1, style.beard);
+      px(9, 10, 2, 1, style.beard);
+      px(6, 10, 4, 1, style.beard);
+      break;
+    case 'karina':
+      px(4, 1, 8, 2, style.hair);
+      px(3, 2, 2, 7, style.hair);
+      px(11, 2, 2, 7, style.hair);
+      px(4, 1, 6, 1, style.hairLight);
+      px(4, 3, 1, 5, style.hairLight);
+      px(11, 3, 1, 5, style.hairLight);
+      px(5, 10, 1, 1, style.mouth);
+      px(10, 10, 1, 1, style.mouth);
+      break;
+    case 'adorni':
+      px(4, 1, 8, 1, style.hairLight);
+      px(4, 2, 8, 1, style.skin);
+      px(5, 5, 2, 1, style.brow);
+      px(9, 5, 2, 1, style.brow);
+      px(5, 8, 6, 3, style.beard);
+      px(4, 7, 1, 3, style.beard);
+      px(11, 7, 1, 3, style.beard);
+      px(6, 9, 4, 1, style.hairLight);
+      break;
+    case 'espert':
+      px(4, 1, 8, 2, style.hair);
+      px(3, 2, 2, 2, style.hair);
+      px(11, 2, 2, 2, style.hair);
+      px(5, 2, 6, 1, style.hairLight);
+      px(5, 5, 2, 1, style.brow);
+      px(9, 5, 2, 1, style.brow);
+      px(6, 10, 4, 1, '#6c5c54');
+      break;
+    case 'spagnuolo':
+      px(4, 1, 8, 2, style.hair);
+      px(3, 2, 1, 5, style.hair);
+      px(12, 2, 1, 5, style.hair);
+      px(5, 2, 6, 1, style.hairLight);
+      px(5, 8, 6, 3, style.beard);
+      px(6, 9, 4, 1, style.hairLight);
+      break;
+    case 'novelli':
+      px(4, 1, 8, 2, style.hair);
+      px(3, 2, 1, 4, style.hair);
+      px(12, 2, 1, 4, style.hair);
+      px(7, 1, 3, 1, style.hairLight);
+      px(6, 8, 4, 2, style.beard);
+      px(5, 9, 1, 1, style.beard);
+      px(10, 9, 1, 1, style.beard);
+      break;
+  }
+
+  // Contorno suave para look más definido.
+  px(4, 2, 8, 1, 'rgba(0,0,0,0.10)');
+  px(4, 10, 8, 1, 'rgba(0,0,0,0.18)');
+
+  ctx.restore();
+}
+
+function createCharacterPixelFaceCanvas(characterId, scale = 4, options = {}) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 16 * scale;
+  canvas.height = 16 * scale;
+  canvas.className = 'pixel-face-canvas' + (options.className ? ' ' + options.className : '');
+  canvas.style.imageRendering = 'pixelated';
+  const faceCtx = canvas.getContext('2d');
+  faceCtx.imageSmoothingEnabled = false;
+  drawCharacterPixelPortrait(faceCtx, characterId, 0, 0, scale, options);
+  return canvas;
+}
+
+function mountCharacterPixelFace(container, characterId, scale = 4, options = {}) {
+  if (!container) return null;
+  container.textContent = '';
+  const canvas = createCharacterPixelFaceCanvas(characterId, scale, options);
+  container.appendChild(canvas);
+  return canvas;
+}
+
 const GAME_QUOTES = [
   '"El ajuste lo paga la casta" 🪚',
   '"No hay plata" 💸',
