@@ -6,6 +6,15 @@ Un juego de plataformas estilo Mario Bros pero con la temática de los escándal
 
 ---
 
+## 🆕 VERSIÓN MEJORADA
+
+Esta entrega suma:
+- 40 niveles generados con dificultad progresiva.
+- 8 mundos/escenarios: Congreso, Caribe offshore, Casa Rosada, Tribunales, Crypto City, Aeropuerto VIP, ANDIS y Final.
+- Enemigos con lógica de plataforma clásica: patrullan, giran en bordes, algunos vuelan, saltan, cargan al jugador o funcionan como mini-boss.
+- Plataformas móviles, checkpoints, pinches, powerups y barra de progreso del nivel.
+- En móvil, doble toque sobre **SALTAR** activa el poder especial.
+
 ## 🕹️ CÓMO JUGAR
 
 **Controles (teclado):**
